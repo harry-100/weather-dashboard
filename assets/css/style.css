@@ -1,0 +1,15 @@
+
+
+header {
+    background-image: linear-gradient(to right, #4e32a8, #45556e);
+    color: #fff;
+    /* text-align: center; */
+    margin: 30px 20px;
+    
+}
+.title-bar {
+    text-align: center;
+}
+h3 {
+    margin: 10px;
+}
