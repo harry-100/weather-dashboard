@@ -13,3 +13,27 @@ header {
 h3 {
     margin: 10px;
 }
+.green {
+    background-color: green;
+}
+.yellow { 
+    background-color: yellow;
+}
+.red {
+    background-color: red;
+}
+.days {
+    background-color: #062a64;
+    color: #fff;
+}
+.currentDay {
+    background-color: #92dce7;
+}
+#button {
+    width: 80%;
+    margin-left: 20px;
+    align-items: center;
+}
+.cities {
+    width:80%
+}

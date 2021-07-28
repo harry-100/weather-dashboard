@@ -12,70 +12,36 @@
 </head>
 <body>
     <header >
+      <div>
             <nav class="navbar-dark display-6 title-bar text-center pt-2 pb-2">Weather Dashboard</nav>
-        </div>
+      </div>
     </header>
     <div>
         <div class="row">
             <div class="col col-md-3">
+              <div class="row">
                 <h3>Search for a City:</h3>
-                <input class="m-3" type="text">
+                <input id="cityName" class="m-3" onfocus="this.value=''" type="text">
+                <button id="button" class="btn btn-primary m-3">Submit</button>
+              </div>
+              <div id="previousSearches" class="row">Previous Searches</div>  
             </div>
             <div class="col col-md-9">
-                <div class="row">
-                    
-                    <div class="col col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                              This is some text within a card body.
-                            </div>
-                          </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-2">
-                        <div class="card">
-                            <div class="card-body">
-                              This is some text within a card body.
-                            </div>
-                          </div>
-                    </div>
-                    <div class="col col-md-2">
-                        <div class="card">
-                            <div class="card-body">
-                              This is some text within a card body.
-                            </div>
-                          </div>
-                    </div>
-                    <div class="col col-md-2">
-                        <div class="card">
-                            <div class="card-body">
-                              This is some text within a card body.
-                            </div>
-                          </div>
-                    </div>
-                    <div class="col col-md-2">
-                        <div class="card">
-                            <div class="card-body">
-                              This is some text within a card body.
-                            </div>
-                          </div>
-                    </div>
-                    <div class="col col-md-2">
-                        <div class="card">
-                            <div class="card-body">
-                              This is some text within a card body.
-                            </div>
-                          </div>
-                    </div>
-                    <div class="col col-md-2"></div>
-                </div>
+
+                <!-- Current Weather Information -->
+              <div class="row">
+                    <div id="currentInfo" class="col col-md-12"></div>
+              </div>
+
+                <!-- Next 5 Day Forecast  -->
+                <div id = "row" class="row mt-4 d-flex justify-content-around"></div>
             </div>
         </div>
     </div>
 
    <!--  links to script file and jQuery  -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="./assets/js/main.js" ></script>
 </body>
