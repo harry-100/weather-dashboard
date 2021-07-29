@@ -19,12 +19,12 @@
     <div>
         <div class="row">
             <div class="col col-md-3">
-              <div class="row">
+              <div class="row d-flex justify-content-center">
                 <h3>Search for a City:</h3>
-                <input id="cityName" class="m-3" onfocus="this.value=''" type="text">
+                <input id="cityName" class="m-3 inputCity" onfocus="this.value=''" type="text">
                 <button id="button" class="btn btn-primary m-3">Submit</button>
               </div>
-              <div id="previousSearches" class="row">Previous Searches</div>  
+              <div id="previousSearches" class="row"></div>  
             </div>
             <div class="col col-md-9">
 
@@ -34,7 +34,7 @@
               </div>
 
                 <!-- Next 5 Day Forecast  -->
-                <div id = "row" class="row mt-4 d-flex justify-content-around"></div>
+                <div id = "row" class="day-cards row mt-4 d-flex justify-content-around"></div>
             </div>
         </div>
     </div>

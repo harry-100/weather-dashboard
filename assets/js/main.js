@@ -6,6 +6,8 @@ var apiKey='1b0f67ad6e991cee1547bb977f88f694'
 var openWeatherUrl = 'https://api.openweathermap.org/data/2.5/weather'
 var openWeatherOneUrl = 'https://api.openweathermap.org/data/2.5/onecall'
 var submitEl = $("#button");
+var cities = JSON.parse(localStorage.getItem("previousCities")) || [];
+
 // var inputEl = $("#cityName");
 
 function geoLocation(cityName) {
@@ -33,18 +35,28 @@ fetch(openWeatherOneUrl + "?lat=" + lat + "&lon=" + lon + "&exclude=hourly,minut
 })
 .then(function(weatherData){
     displayWeather(weatherData);
+    console.log("weatherdata", weatherData)
 })
 }
 
 function displayWeather(weatherData){
+
+    //  clear out previous data
+    $("#currentInfo").empty();
+    $("#row").empty();
+
     var currentTemp =  weatherData.current.temp;
     var uvIndex =  weatherData.current.uvi;
     var humidity =  weatherData.current.humidity;
     var windSpeed = weatherData.current.wind_speed;
+    var getIcon = weatherData.current.weather[0].icon;
 
     var currentInfoColEl = $("#currentInfo");
     var currentInfoEl = $("<div>");
     var cityNameEl = $("<div>");
+    var currentIconDivEl = $("<div>");
+    var currentIconEl = $("<img>");
+    currentIconEl.attr("src", "http://openweathermap.org/img/w/" + getIcon + ".png")
     var currentTempEl = $("<div>");
         
     var uvIndexTextEl = $("<div>");
@@ -52,11 +64,10 @@ function displayWeather(weatherData){
 
     var windSpeedEl = $("<div>");
     var humidityEl = $("<div>");
-    
+    cityName = cityName.toUpperCase();
     currentTemp = currentTemp.toFixed(0);
-    console.log("City name before printing=", cityName);
-    cityNameEl.text(cityName + "(" + currentDate + ")");
-    cityNameEl.addClass("m-2 display-6")
+    cityNameEl.text(cityName + " (" + currentDate + ")");
+    cityNameEl.addClass("m-2 cityName")
     currentTempEl.text("Temp: " + currentTemp + "°C");
     currentTempEl.addClass("m-3")
     uvIndexTextEl.text("UV Index: ");
@@ -65,13 +76,13 @@ function displayWeather(weatherData){
     // console.log("uvIndex=", parseInt(uvIndex));
     // logic for UV index category
     if (uvIndex < 3) {
-        uvIndexEl.addClass("green");
+        uvIndexEl.addClass("green font-white");
     }
     else if (uvIndex > 3 && uvIndex < 8) {
-        uvIndexEl.addClass("yellow");
+        uvIndexEl.addClass("yellow font-white");
     }
     else if (uvIndex >= 8){
-        uvIndexEl.addClass("red");
+        uvIndexEl.addClass("red font-white");
     }
     windSpeed = (windSpeed*3.6).toFixed(1);
     windSpeedEl.text("Wind Speed: " + windSpeed + " km/hr");
@@ -81,6 +92,8 @@ function displayWeather(weatherData){
     currentInfoEl.addClass("card-body currentDay");
     currentInfoColEl.append(currentInfoEl);
     currentInfoEl.append(cityNameEl);
+    currentIconDivEl.append(currentIconEl);
+    cityNameEl.append(currentIconDivEl);
     currentInfoEl.append(currentTempEl);
     uvIndexTextEl.append(uvIndexEl);
     currentInfoEl.append(uvIndexTextEl);
@@ -91,13 +104,12 @@ function displayWeather(weatherData){
 
     for (var i=1; i < 6; i++){
         showDate = moment().add(i,'days').format("MM/DD/YYYY");
-        console.log("Next date=", showDate);
         showTemp = weatherData.daily[i].temp.day;
+        showTemp = showTemp.toFixed(0);
         showWindSpeed = weatherData.daily[i].wind_speed;
         showWindSpeed = (showWindSpeed*3.6).toFixed(1);
         showHumidity = weatherData.daily[i].humidity;
-        showIcon = weatherData.daily[i].weather[0].icon;
-        console.log("showIcon=", showIcon);
+        var showIcon = weatherData.daily[i].weather[0].icon;
 
     // Create Elements
         var rowEl = $("#row");
@@ -105,10 +117,22 @@ function displayWeather(weatherData){
         var cardEl = $("<div>");
         var cardBodyEl = $("<div>");
         var showDateEl = $("<div>");
+        var iconDivEl = $("<div>");
+        var iconEl = $("<img>");
         var showTempEl = $("<div>");
         var showWindSpeedEl = $("<div>");
         var showHumidityEl = $("<div>");
+        
         showDateEl.text(showDate);
+        showDateEl.addClass("m-2");
+
+        iconDivEl.attr("id", "icon");
+        iconEl.attr("id", "wicon");
+        iconEl.attr("src", "http://openweathermap.org/img/w/" + showIcon + ".png");
+
+        showTempEl.addClass("m-2");
+        showHumidityEl.addClass("m-2");
+        showWindSpeedEl.addClass("m-2");
         showTempEl.text("Temp: " + showTemp + "°C");
         showWindSpeedEl.text("Wind: " + showWindSpeed + " km/hr");
         showHumidityEl.text("Humidity: " + showHumidity + " %");
@@ -122,6 +146,9 @@ function displayWeather(weatherData){
         colEl.append(cardEl);
         cardEl.append(cardBodyEl);
         cardBodyEl.append(showDateEl);
+        iconDivEl.append(iconEl);
+        cardBodyEl.append(iconDivEl);
+
         cardBodyEl.append(showTempEl);
         cardBodyEl.append(showWindSpeedEl);
         cardBodyEl.append(showHumidityEl);
@@ -131,21 +158,31 @@ function displayWeather(weatherData){
 
 }
 submitEl.click(function(){
-    // var inputEl = $("#cityName");
+    
+    var inputEl = $("#cityName");
     // currentInfoEl.remove();
-    var cities = [];
-    var inputEl = document.getElementById("cityName");
-    cityName = inputEl.value;
+    // var cities = [];,m 
+    cityName = inputEl.val();
     var previousSearchesEl = $("#previousSearches");
     var previousCitiesEl = $("<button>");
     previousCitiesEl.addClass("cities btn btn-warning m-2");
     previousCitiesEl.text(cityName);
     cities.push(cityName);
-    
+    localStorage.setItem("previousCities",JSON.stringify(cities));
     previousSearchesEl.append(previousCitiesEl);
     // cityName = "Toronto";
     console.log("city-name entered=", cityName);
+
     geoLocation(cityName);
-    
 })
 
+// create buttons for previous searches
+var previousSearchesEl = $("#previousSearches");
+previousSearchesEl.addClass("d-flex justify-content-center");
+for (let i = 0; i < cities.length; i++){
+    
+    var previousCitiesEl = $("<button>");
+    previousCitiesEl.addClass("cities btn btn-warning mt-3");
+    previousCitiesEl.text(cities[i]);
+    previousSearchesEl.append(previousCitiesEl);
+}
