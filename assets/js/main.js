@@ -8,23 +8,19 @@ var openWeatherOneUrl = 'https://api.openweathermap.org/data/2.5/onecall'
 var submitEl = $("#button");
 var cities = JSON.parse(localStorage.getItem("previousCities")) || [];
 
-// var inputEl = $("#cityName");
 
-// function geoLocation(cityName) {
-// //  Geocoding - getting latitude and longitude, given city name
-// fetch(openWeatherUrl + "?q=" + cityName + "&appid=" + apiKey)
-// .then(function(response){
-//     return response.json();
-// })
-// .then(function(data){
+// create buttons for previous searches
+var previousSearchesEl = $("#previousSearches");
+previousSearchesEl.addClass("d-flex justify-content-center");
+for (let i = 0; i < cities.length; i++){
+    
+    var previousCitiesEl = $("<button>");
+    previousCitiesEl.addClass("cities btn btn-warning mt-3");
+    previousCitiesEl.attr("id", "searchCity");
+    previousCitiesEl.text(cities[i]);
+    previousSearchesEl.append(previousCitiesEl);
+}
 
-//      lon = data.coord.lon;
-//      lat = data.coord.lat;
-//      console.log("longitude=", lon);
-//      console.log("latitude=", lat);
-//      getWeather(lat, lon);
-// })
-// }
 function getWeather(lat, lon){
 
 console.log("out-longitude=", lon);
@@ -157,61 +153,64 @@ function displayWeather(weatherData){
 
 
 }
+
+function geoLocation(cityName) {
+    //  Geocoding - getting latitude and longitude, given city name
+    fetch(openWeatherUrl + "?q=" + cityName + "&appid=" + apiKey)
+    .then(function(response){
+        if (response.ok){
+        response.json()
+    
+    .then(function(data){
+        
+            console.log("first fetch", data);
+            lon = data.coord.lon;
+            lat = data.coord.lat;
+            console.log("longitude=", lon);
+            console.log("latitude=", lat);
+            getWeather(lat, lon);
+            var previousSearchesEl = $("#previousSearches");
+            var previousCitiesEl = $("<button>");
+            previousCitiesEl.addClass("cities btn btn-warning mt-3");
+            previousCitiesEl.attr("id", "searchCity");
+            cityName = cityName.toUpperCase();
+            previousCitiesEl.text(cityName);
+            const isInArray = cities.includes(cityName);
+            console.log("Is in Array=", isInArray);
+            if (isInArray !== true) {
+                // cities.push(cityName);
+                cities.unshift(cityName);
+                localStorage.setItem("previousCities",JSON.stringify(cities));
+                previousSearchesEl.prepend(previousCitiesEl);
+            }
+            if (cities.length > 5){
+                cities.pop();
+                previousSearchesEl.children().last().remove();
+            }
+
+        });
+    }
+        else {    
+          console.log("City not found- alert sent");
+          var alertEl = $("<div>");
+          alertEl.addClass("alert alert-danger");
+          alertEl.text("Please check the city name and try again");
+          submitEl.after(alertEl);
+          setTimeout(function(){
+              alertEl.remove();}, 3000)
+          }
+          
+        });
+            
+};
+    
+
 submitEl.click(function(){
     
     var inputEl = $("#cityName");
-    // currentInfoEl.remove();
-    // var cities = [];
     cityName = inputEl.val();
-
-    function geoLocation(cityName) {
-        //  Geocoding - getting latitude and longitude, given city name
-        fetch(openWeatherUrl + "?q=" + cityName + "&appid=" + apiKey)
-        .then(function(response){
-            return response.json();
-        })
-        .then(function(data){
-            if (data.ok){
-                console.log("first fetch", data);
-                lon = data.coord.lon;
-                lat = data.coord.lat;
-                console.log("longitude=", lon);
-                console.log("latitude=", lat);
-                getWeather(lat, lon);
-            }
-            else {    
-              console.log("City not found- alert sent");
-              var alertEl = $("<div>");
-              alertEl.addClass("alert alert-danger");
-              alertEl.text("Please check the city name and try again");
-              submitEl.append(alertEl);
-              return false;
-            }
-                
-        })
-        }
-
-
-    var previousSearchesEl = $("#previousSearches");
-    var previousCitiesEl = $("<button>");
-    previousCitiesEl.addClass("cities btn btn-warning m-2");
-    previousCitiesEl.text(cityName);
-    cities.push(cityName);
-    localStorage.setItem("previousCities",JSON.stringify(cities));
-    previousSearchesEl.append(previousCitiesEl);
-    // cityName = "Toronto";
-    console.log("city-name entered=", cityName);
-
     geoLocation(cityName);
-})
+});
 
-// create buttons for previous searches
-var previousSearchesEl = $("#previousSearches");
-previousSearchesEl.addClass("d-flex justify-content-center");
-for (let i = 0; i < cities.length; i++){
-    
-    var previousCitiesEl = $("<button>");
-    previousCitiesEl.addClass("cities btn btn-warning mt-3");
-    previousCitiesEl.text(cities[i]);
-    previousSearchesEl.append(previousCitiesEl);
-}
+
+
