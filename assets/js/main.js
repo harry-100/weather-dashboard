@@ -10,21 +10,21 @@ var cities = JSON.parse(localStorage.getItem("previousCities")) || [];
 
 // var inputEl = $("#cityName");
 
-function geoLocation(cityName) {
-//  Geocoding - getting latitude and longitude, given city name
-fetch(openWeatherUrl + "?q=" + cityName + "&appid=" + apiKey)
-.then(function(response){
-    return response.json();
-})
-.then(function(data){
+// function geoLocation(cityName) {
+// //  Geocoding - getting latitude and longitude, given city name
+// fetch(openWeatherUrl + "?q=" + cityName + "&appid=" + apiKey)
+// .then(function(response){
+//     return response.json();
+// })
+// .then(function(data){
 
-     lon = data.coord.lon;
-     lat = data.coord.lat;
-     console.log("longitude=", lon);
-     console.log("latitude=", lat);
-     getWeather(lat, lon);
-})
-}
+//      lon = data.coord.lon;
+//      lat = data.coord.lat;
+//      console.log("longitude=", lon);
+//      console.log("latitude=", lat);
+//      getWeather(lat, lon);
+// })
+// }
 function getWeather(lat, lon){
 
 console.log("out-longitude=", lon);
@@ -161,8 +161,37 @@ submitEl.click(function(){
     
     var inputEl = $("#cityName");
     // currentInfoEl.remove();
-    // var cities = [];,m 
+    // var cities = [];
     cityName = inputEl.val();
+
+    function geoLocation(cityName) {
+        //  Geocoding - getting latitude and longitude, given city name
+        fetch(openWeatherUrl + "?q=" + cityName + "&appid=" + apiKey)
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(data){
+            if (data.ok){
+                console.log("first fetch", data);
+                lon = data.coord.lon;
+                lat = data.coord.lat;
+                console.log("longitude=", lon);
+                console.log("latitude=", lat);
+                getWeather(lat, lon);
+            }
+            else {    
+              console.log("City not found- alert sent");
+              var alertEl = $("<div>");
+              alertEl.addClass("alert alert-danger");
+              alertEl.text("Please check the city name and try again");
+              submitEl.append(alertEl);
+              return false;
+            }
+                
+        })
+        }
+
+
     var previousSearchesEl = $("#previousSearches");
     var previousCitiesEl = $("<button>");
     previousCitiesEl.addClass("cities btn btn-warning m-2");
