@@ -206,11 +206,13 @@ function geoLocation(cityName) {
     
 
 submitEl.click(function(){
-    
     var inputEl = $("#cityName");
     cityName = inputEl.val();
     geoLocation(cityName);
 });
 
-
+    $("#previousSearches").on("click", "#searchCity", function(){
+    cityName = $(this).text();
+    geoLocation(cityName);
+})
 
