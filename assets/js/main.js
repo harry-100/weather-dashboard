@@ -8,30 +8,26 @@ var openWeatherOneUrl = 'https://api.openweathermap.org/data/2.5/onecall'
 var submitEl = $("#button");
 var cities = JSON.parse(localStorage.getItem("previousCities")) || [];
 
-
 // create buttons for previous searches
 var previousSearchesEl = $("#previousSearches");
 previousSearchesEl.addClass("d-flex justify-content-center");
 for (let i = 0; i < cities.length; i++){
     
     var previousCitiesEl = $("<button>");
-    previousCitiesEl.addClass("cities btn btn-warning mt-3");
-    previousCitiesEl.attr("id", "searchCity");
+    previousCitiesEl.addClass("searchCity cities btn btn-warning mt-3");
     previousCitiesEl.text(cities[i]);
     previousSearchesEl.append(previousCitiesEl);
 }
 
+//  this function gets the weather information for the city searched
 function getWeather(lat, lon){
 
-console.log("out-longitude=", lon);
-console.log("out-latitude=", lat);
 fetch(openWeatherOneUrl + "?lat=" + lat + "&lon=" + lon + "&exclude=hourly,minutely,&appid=" + apiKey + "&units=metric")
 .then(function(response){
     return response.json();
 })
 .then(function(weatherData){
     displayWeather(weatherData);
-    console.log("weatherdata", weatherData)
 })
 }
 
@@ -47,6 +43,7 @@ function displayWeather(weatherData){
     var windSpeed = weatherData.current.wind_speed;
     var getIcon = weatherData.current.weather[0].icon;
 
+    // create elements for displaying current data
     var currentInfoColEl = $("#currentInfo");
     var currentInfoEl = $("<div>");
     var cityNameEl = $("<div>");
@@ -54,10 +51,8 @@ function displayWeather(weatherData){
     var currentIconEl = $("<img>");
     currentIconEl.attr("src", "http://openweathermap.org/img/w/" + getIcon + ".png")
     var currentTempEl = $("<div>");
-        
     var uvIndexTextEl = $("<div>");
     var uvIndexEl = $("<span>");
-
     var windSpeedEl = $("<div>");
     var humidityEl = $("<div>");
     cityName = cityName.toUpperCase();
@@ -69,7 +64,7 @@ function displayWeather(weatherData){
     uvIndexTextEl.text("UV Index: ");
     uvIndexTextEl.addClass("m-3");
     uvIndexEl.text(uvIndex);
-    // console.log("uvIndex=", parseInt(uvIndex));
+   
     // logic for UV index category
     if (uvIndex < 3) {
         uvIndexEl.addClass("green font-white");
@@ -121,7 +116,6 @@ function displayWeather(weatherData){
         
         showDateEl.text(showDate);
         showDateEl.addClass("m-2");
-
         iconDivEl.attr("id", "icon");
         iconEl.attr("id", "wicon");
         iconEl.attr("src", "http://openweathermap.org/img/w/" + showIcon + ".png");
@@ -137,82 +131,69 @@ function displayWeather(weatherData){
         cardBodyEl.attr("id", i);
         cardBodyEl.addClass("card-body")
         
-
+        // append elements for display
         rowEl.append(colEl);
         colEl.append(cardEl);
         cardEl.append(cardBodyEl);
         cardBodyEl.append(showDateEl);
         iconDivEl.append(iconEl);
         cardBodyEl.append(iconDivEl);
-
         cardBodyEl.append(showTempEl);
         cardBodyEl.append(showWindSpeedEl);
         cardBodyEl.append(showHumidityEl);
-
     }
-
-
 }
 
+// this function gets the latitude and longitude of a city that are needed to get the weather 
 function geoLocation(cityName) {
-    //  Geocoding - getting latitude and longitude, given city name
+    
     fetch(openWeatherUrl + "?q=" + cityName + "&appid=" + apiKey)
     .then(function(response){
         if (response.ok){
         response.json()
     
-    .then(function(data){
-        
-            console.log("first fetch", data);
+    .then(function(data){  
             lon = data.coord.lon;
             lat = data.coord.lat;
-            console.log("longitude=", lon);
-            console.log("latitude=", lat);
             getWeather(lat, lon);
             var previousSearchesEl = $("#previousSearches");
             var previousCitiesEl = $("<button>");
-            previousCitiesEl.addClass("cities btn btn-warning mt-3");
-            previousCitiesEl.attr("id", "searchCity");
+            previousCitiesEl.addClass("searchCity cities btn btn-warning mt-3");
             cityName = cityName.toUpperCase();
             previousCitiesEl.text(cityName);
             const isInArray = cities.includes(cityName);
-            console.log("Is in Array=", isInArray);
+
+            // this checks if the city is already in previously searched list
             if (isInArray !== true) {
-                // cities.push(cityName);
                 cities.unshift(cityName);
                 localStorage.setItem("previousCities",JSON.stringify(cities));
                 previousSearchesEl.prepend(previousCitiesEl);
             }
-            if (cities.length > 5){
+            // this limits the number of cities to be displayed to 8
+            if (cities.length > 8){
                 cities.pop();
                 previousSearchesEl.children().last().remove();
             }
-
         });
     }
         else {    
-          console.log("City not found- alert sent");
           var alertEl = $("<div>");
-          alertEl.addClass("alert alert-danger");
+          alertEl.addClass("alert alert-danger w-75");
           alertEl.text("Please check the city name and try again");
           submitEl.after(alertEl);
           setTimeout(function(){
-              alertEl.remove();}, 3000)
+              alertEl.remove();}, 2000)
           }
-          
-        });
-            
+        });           
 };
-    
-
-submitEl.click(function(){
-    var inputEl = $("#cityName");
-    cityName = inputEl.val();
-    geoLocation(cityName);
-});
-
-    $("#previousSearches").on("click", "#searchCity", function(){
-    cityName = $(this).text();
+    //  Event Listener - Coding for searching a city for weather
+    $(document).on("click", ".searchCity", function(){
+        if ($(this).parent().attr("id") === "previousSearches") {
+            cityName = $(this).text();
+        } else {
+            var inputEl = $("#cityName");
+            cityName = inputEl.val();
+        }   
     geoLocation(cityName);
 })
 
