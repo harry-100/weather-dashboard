@@ -16,28 +16,28 @@
             <nav class="navbar-dark display-6 title-bar text-center pt-2 pb-2">Weather Dashboard</nav>
       </div>
     </header>
-    <div>
-        <div class="row">
-            <div class="col col-md-3">
-              <div class="row d-flex justify-content-center">
+    
+        <div class="container">
+          <div class="row d-flex">
+              <div class="col-sm-4">
                 <h3>Search for a City:</h3>
                 <input id="cityName" class="m-3 inputCity" onfocus="this.value=''" type="text" placeholder="Enter a City">
-                <button id="button" class=" searchCity btn btn-primary m-3">Submit</button>
-              </div>
-              <div id="previousSearches" class="row"></div>  
+                <button id="button" class="searchCity btn btn-primary m-3">Submit</button>
+              
+              <div id="previousSearches" class="d-none d-sm-block row mx-3"></div>  
             </div>
-            <div class="col col-md-9">
 
-                <!-- Current Weather Information -->
-              <div class="row">
-                    <div id="currentInfo" class="col col-md-12"></div>
-              </div>
-
+            <!-- Current Weather Information -->
+            <div id="currentInfo" class="col-sm-8 align-self-center"></div>
+          </div>
                 <!-- Next 5 Day Forecast  -->
-                <div id = "row" class="day-cards row mt-4 d-flex justify-content-around"></div>
-            </div>
+                <div class="row">
+                  <div id = "row" class="day-cards mt-4 p-4 d-sm-flex justify-content-around"></div>
+                </div>
+                
+            
         </div>
-    </div>
+    
 
    <!--  links to script file and jQuery  -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

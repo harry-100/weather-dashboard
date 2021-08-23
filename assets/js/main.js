@@ -126,7 +126,7 @@ function displayWeather(weatherData){
         showTempEl.text("Temp: " + showTemp + "°C");
         showWindSpeedEl.text("Wind: " + showWindSpeed + " km/hr");
         showHumidityEl.text("Humidity: " + showHumidity + " %");
-        colEl.addClass("col col-md-2 days");
+        colEl.addClass("col col-md-2 m-4 days");
         cardEl.addClass("card days");
         cardBodyEl.attr("id", i);
         cardBodyEl.addClass("card-body")
@@ -170,7 +170,7 @@ function geoLocation(cityName) {
                 previousSearchesEl.prepend(previousCitiesEl);
             }
             // this limits the number of cities to be displayed to 8
-            if (cities.length > 8){
+            if (cities.length > 4){
                 cities.pop();
                 previousSearchesEl.children().last().remove();
             }
